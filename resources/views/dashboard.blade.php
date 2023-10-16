@@ -1,9 +1,22 @@
 <x-app-layout>
-    @section('title', 'Dashboard Kuesioner')
+    @section('title', 'Kuesioner')
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
+        
+<a href="#" class="block mx-auto max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Nama: {{ Auth()->user()->nmmhs }}</h5>
+    <p class="font-normal text-gray-700 dark:text-gray-400">
+        
+        <div>
+            NIM: {{ Auth()->user()->nimhs }}
+        </div>
+        <div>
+            Email: {{ Auth()->user()->email }}
+        </div>
+    </p>
+</a>
+
+      
+        
     </x-slot>
 
     <div class="py-12">
@@ -12,14 +25,20 @@
             <form id="myForm" method="POST" action="{{ route('kuesionerDashboard.store', $mahasiswa->nimhs) }}">
                 @csrf
                 @foreach ($kelas_kuesioner as $data_kelas)
-                    <div class="    my-4 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                        <div class="p-6 text-gray-900 dark:text-gray-100">
-                            <table>
+                    <div class=" parent w-full  my-4 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                        <div class="p-6 w-full text-gray-900 dark:text-gray-100">
+                            <table class="table w-full">
                                 <thead>
                                     <tr>
                                         <td>
-                                            <div  class=" title mt-2 text-2xl font-bold text-blue-600 bg-blue-100 text-center w-100 " style="width:100%">
-                                                KUESIONER {{ $kelas[$data_kelas] }}
+                                            <div>
+
+                                                <div class=" title  mb-4 w-full text-center bg-amber-500 p-4 text-base leading-5 text-white opacity-100">
+                                                    KUESIONER {{ $kelas[$data_kelas] }}
+                                                </div>
+                                                <div class="border-2 border-amber-200">
+
+                                                </div>
                                             </div>
                                             <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
                                         </td>
@@ -79,9 +98,9 @@
                                                 </div>
 
                                             </div>
-                                        <td>
+                                        {{-- <td>
                                             {{ $trkuesl->where('klkues', $data_kelas)->where('kdkues', $kdkues)->first()->skor }}
-                                        </td>
+                                        </td> --}}
 
                                         </td>
                                     </tr>
@@ -98,17 +117,19 @@
     @endforeach
 
     @foreach ($kelas_matakuliah as $matkul)
-        <div class="    my-4 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 text-gray-900 dark:text-gray-100">
-                <table>
+        <div class=" w-full parent  my-4 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="w-full p-6 text-gray-900 dark:text-gray-100">
+                <table class="table w-full">
                     <thead>
                         <tr>
                             <td>
 
-
-                                <div class=" title mt-2 text-2xl font-bold text-blue-600 bg-blue-100 text-center w-100 " style="width:100%">
+                                <div class=" title  mb-4 w-full text-center bg-amber-500 p-4 text-base leading-5 text-white opacity-100">
                                     KUESIONER Program Studi: {{ $matakuliah->where('kdkmk', $matkul)->first()->nakmk }}
-                                </div>
+                                  </div>
+                                {{-- <div class=" title mt-2 text-2xl font-bold text-blue-600 bg-blue-100 text-center w-100 " style="width:100%">
+                                    KUESIONER Program Studi: {{ $matakuliah->where('kdkmk', $matkul)->first()->nakmk }}
+                                </div> --}}
                                 <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
 
                             </td>
@@ -129,10 +150,10 @@
                                         </span>
                                     </div>
                                 </td>
-                                <td>
+                                {{-- <td>
 
                                     {{ $trkuesk->where('kdkmk', $matkul)->where('kdkues', $data->kdkues)->first()->skor }}
-                                </td>
+                                </td> --}}
 
 
                             </tr>
@@ -204,30 +225,41 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 <script>
-    $('#myForm').submit(function() {
-        $('#loading').show();
-    });
-
-    $(document).ready(function() {
-        $('#loading').hide();
-    });
-
-    var titles = $('.title');
-var heights = titles.map(function() {
-    return $(this).offset().top-150;
-}).get();
-
-$(window).scroll(function() {
-    var windowTop = $(window).scrollTop();
-    titles.each(function(i) {
-        if (windowTop > heights[i]) {
-            $(this).addClass('fixed top-0 left-0');
-        } else {
-            $(this).removeClass('fixed top-0 left-0');
-        }
-    });
-});
-
+  // Fungsi ini dieksekusi saat formulir dengan id "myForm" dikirim
+  $('#myForm').submit(function() {
+      $('#loading').show(); // Tampilkan elemen loading
+  });
+  
+  $(document).ready(function() {
+      var titles = $('.title'); // Dapatkan semua elemen dengan class "title"
+      var parents = $('.parent'); // Dapatkan semua elemen dengan class "parent"
+      
+      // Dapatkan jarak vertikal setiap elemen title dari atas dokumen
+      var heights = titles.map(function() {
+          return $(this).offset().top;
+      }).get();
+      
+      // Dapatkan jarak vertikal setiap elemen parent dari atas dokumen, termasuk tingginya
+      var parentHeights = parents.map(function() {
+          return $(this).offset().top + $(this).outerHeight();
+      }).get();
+      
+      // Fungsi dieksekusi saat jendela di-scroll
+      $(window).scroll(function() {
+          var windowTop = $(window).scrollTop(); // Dapatkan posisi vertikal saat ini dari bilah scroll
+          
+          // Iterasi setiap elemen title
+          titles.each(function(i) {
+              if (windowTop > heights[i] && windowTop < parentHeights[i]) {
+                  $(this).addClass('fixed top-0 left-0 '); // Tambahkan class "fixed", "top-0", dan "left-0"
+              } else {
+                  $(this).removeClass('fixed top-0 left-0 '); // Hapus class "fixed", "top-0", dan "left-0"
+              }
+          });
+      });
+      
+      $('#loading').hide(); // Sembunyikan elemen loading
+  });
 </script>
 
 

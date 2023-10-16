@@ -102,8 +102,8 @@
               </button>
             </div>
             <div class="control">
-              <a href="index.html" class="button">
-                Back
+              <a href="forgot-password" class="button">
+                Lupa Password
               </a>
             </div>
           </div>

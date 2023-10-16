@@ -23,10 +23,11 @@ use App\Models\User;
 */
 
 Route::get('/', function () {
+    return redirect()->route('dashboard');
     return view('welcome');
 });
 
-Route::get('/dashboard', [Controller::class, 'index'])->name('dashboard');
+Route::get('/kuesioner', [Controller::class, 'index'])->name('dashboard')->middleware('auth');
 
 Route::get('/index', function () {
     return view('index');
@@ -158,7 +159,7 @@ Route::post('/dashboard/{nimhs}', function (Request $request, $nimhs) {
             ->where('kdkmk', $update['kdkmk'])
             ->update($update['updateData']);
     }
-    return redirect('/dashboard');
+    return redirect()->route('dashboard');
 })->name('kuesionerDashboard.store');
 
 
