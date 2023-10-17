@@ -112,6 +112,8 @@ Route::post('/dashboard/{nimhs}', function (Request $request, $nimhs) {
 
     $updates_sl = [];
 
+    // $thsms_active = '';
+
     foreach ($request['skor_sl'] as $kode => $kelas) {
         foreach ($kelas as $kelas_key => $skor) {
             $updateData = [
@@ -122,6 +124,7 @@ Route::post('/dashboard/{nimhs}', function (Request $request, $nimhs) {
                 'nimhs' => $nimhs,
                 'kdkues' => $kode,
                 'klkues' => $kelas_key,
+                // 'thsms' => $thsms_active,
                 'updateData' => $updateData
             ];
         }
@@ -131,6 +134,7 @@ Route::post('/dashboard/{nimhs}', function (Request $request, $nimhs) {
         Trkuesl::where('nimhs', $update['nimhs'])
             ->where('kdkues', $update['kdkues'])
             ->where('klkues', $update['klkues'])
+            // ->where('thsms', $update['thsms'])
             ->update($update['updateData']);
     }
 
@@ -178,5 +182,7 @@ Route::get('/createuser', function () {
 
     User::insert($users);
 });
+
+Route::get('/export', [Controller::class,'export'] );
 
 require __DIR__ . '/auth.php';
