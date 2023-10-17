@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TahunsemesterController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
@@ -107,64 +108,7 @@ Route::post('/mahasiswa/sk/{nimhs}', function (Request $request, $nimhs) {
     return redirect('/mahasiswa/sk/' . $nimhs);
 })->name('kuesionerSk.store');
 
-Route::post('/dashboard/{nimhs}', function (Request $request, $nimhs) {
-
-
-    $updates_sl = [];
-
-    // $thsms_active = '';
-
-    foreach ($request['skor_sl'] as $kode => $kelas) {
-        foreach ($kelas as $kelas_key => $skor) {
-            $updateData = [
-                'skor' => $skor
-            ];
-
-            $updates_sl[] = [
-                'nimhs' => $nimhs,
-                'kdkues' => $kode,
-                'klkues' => $kelas_key,
-                // 'thsms' => $thsms_active,
-                'updateData' => $updateData
-            ];
-        }
-    }
-
-    foreach ($updates_sl as $update) {
-        Trkuesl::where('nimhs', $update['nimhs'])
-            ->where('kdkues', $update['kdkues'])
-            ->where('klkues', $update['klkues'])
-            // ->where('thsms', $update['thsms'])
-            ->update($update['updateData']);
-    }
-
-
-
-    $updates_sk = [];
-
-    foreach ($request['skor_sk'] as $kodekues => $kodematkul) {
-        foreach ($kodematkul as $kodematkul_key => $skor) {
-            $updateData = [
-                'skor' => $skor
-            ];
-
-            $updates_sk[] = [
-                'nimhs' => $nimhs,
-                'kdkues' => $kodekues,
-                'kdkmk' => $kodematkul_key,
-                'updateData' => $updateData
-            ];
-        }
-    }
-
-    foreach ($updates_sk as $update) {
-        Trkuesk::where('nimhs', $update['nimhs'])
-            ->where('kdkues', $update['kdkues'])
-            ->where('kdkmk', $update['kdkmk'])
-            ->update($update['updateData']);
-    }
-    return redirect()->route('dashboard');
-})->name('kuesionerDashboard.store');
+Route::post('/dashboard/{nimhs}', [Controller::class,'kuesionerDashboardStore'] )->name('kuesionerDashboard.store');
 
 
 Route::get('/createuser', function () {
@@ -185,4 +129,5 @@ Route::get('/createuser', function () {
 
 Route::get('/export', [Controller::class,'export'] );
 
+Route::resource('/tahunsemesters', TahunsemesterController::class)->middleware('auth');
 require __DIR__ . '/auth.php';

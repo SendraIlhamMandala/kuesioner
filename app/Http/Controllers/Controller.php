@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Kuesioner;
 use App\Models\Mahasiswa;
 use App\Models\Matakuliah;
+use App\Models\Tahunsemester;
 use App\Models\Trkuesk;
 use App\Models\Trkuesl;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
 use mysqli;
@@ -133,6 +135,70 @@ class Controller extends BaseController
 
     }
 
+    public function kuesionerDashboardStore(Request $request, $nimhs) {
+
+            $updates_sl = [];
+        
+            
+
+            $thsms_active = Tahunsemester::where('status', 'aktif')->first()->thsms;
+        
+            foreach ($request['skor_sl'] as $kode => $kelas) {
+                foreach ($kelas as $kelas_key => $skor) {
+                    $updateData = [
+                        'skor' => $skor
+                    ];
+        
+                    $updates_sl[] = [
+                        'nimhs' => $nimhs,
+                        'kdkues' => $kode,
+                        'klkues' => $kelas_key,
+                        'thsms' => $thsms_active,
+                        'updateData' => $updateData
+                    ];
+                }
+            }
+        
+            foreach ($updates_sl as $update) {
+                Trkuesl::where('nimhs', $update['nimhs'])
+                    ->where('kdkues', $update['kdkues'])
+                    ->where('klkues', $update['klkues'])
+                    ->where('thsms', $update['thsms'])
+                    ->update($update['updateData']);
+            }
+        
+        
+        
+            $updates_sk = [];
+        
+            foreach ($request['skor_sk'] as $kodekues => $kodematkul) {
+                foreach ($kodematkul as $kodematkul_key => $skor) {
+                    $updateData = [
+                        'skor' => $skor
+                    ];
+        
+                    $updates_sk[] = [
+                        'nimhs' => $nimhs,
+                        'kdkues' => $kodekues,
+                        'kdkmk' => $kodematkul_key,
+                        'thsms' => $thsms_active,
+                        'updateData' => $updateData
+                    ];
+                }
+            }
+        
+            foreach ($updates_sk as $update) {
+                Trkuesk::where('nimhs', $update['nimhs'])
+                    ->where('kdkues', $update['kdkues'])
+                    ->where('kdkmk', $update['kdkmk'])
+                    ->where('thsms', $update['thsms'])
+                    ->update($update['updateData']);
+            }
+            return redirect()->route('dashboard');
+        }
+    
+
+
     public static function Export_Database($host,$user,$pass,$name,  $tables=false, $backup_name=false ){
         $mysqli = new mysqli($host,$user,$pass,$name); 
         $mysqli->select_db($name); 
@@ -202,5 +268,7 @@ class Controller extends BaseController
         header("Content-disposition: attachment; filename=\"".$backup_name."\"");  
         echo $content; exit;
     }
+
+    
 
 }

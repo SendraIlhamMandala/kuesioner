@@ -11,11 +11,25 @@
                 </div>
 
                 <!-- Navigation Links -->
+                @if (Auth()->user()->nmmhs != 'admin')
+                    
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Kuesioner') }}
                     </x-nav-link>
                 </div>
+
+                @else
+
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('tahunsemesters.index')" :active="request()->routeIs('tahunsemesters.index')">
+                        {{ __('Tahun semester') }}
+                    </x-nav-link>
+                </div>
+
+
+                @endif
+
             </div>
 
             <!-- Settings Dropdown -->
