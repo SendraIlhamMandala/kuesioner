@@ -37,7 +37,7 @@
 
                                                 <div
                                                     class=" title  mb-4 w-full text-center bg-amber-500 p-4 text-base leading-5 text-white opacity-100">
-                                                    KUESIONER {{ $kelas[$data_kelas] }}
+                                                    EDIT KUESIONER {{ $kelas[$data_kelas] }}
                                                 </div>
                                                 <div class="border-2 border-amber-200">
 
@@ -76,26 +76,53 @@
                                                     <input type="radio"
                                                         id="1[{{ $kdkues }}][{{ $data_kelas }}]"
                                                         name="skor_sl[{{ $kdkues }}][{{ $data_kelas }}]"
-                                                        value="1" required>
+                                                        value="1" required
+                                                        
+                                                        @if ( $trkuesl->where('klkues', $data_kelas)->where('kdkues', $kdkues)->first()->skor == 1 )
+                                                            checked
+                                                        @endif
+                                                        
+                                                        >
                                                     <label for="1[{{ $kdkues }}][{{ $data_kelas }}]">Sangat
                                                         Tidak
                                                         Setuju</label><br>
                                                     <input type="radio"
                                                         id="2[{{ $kdkues }}][{{ $data_kelas }}]"
                                                         name="skor_sl[{{ $kdkues }}][{{ $data_kelas }}]"
-                                                        value="2" required>
+                                                        value="2" required
+                                                        
+                                                        @if ( $trkuesl->where('klkues', $data_kelas)->where('kdkues', $kdkues)->first()->skor == 2 )
+                                                            checked
+                                                        @endif
+                                                        
+
+                                                        >
                                                     <label for="2[{{ $kdkues }}][{{ $data_kelas }}]">Tidak
                                                         Setuju</label><br>
                                                     <input type="radio"
                                                         id="3[{{ $kdkues }}][{{ $data_kelas }}]"
                                                         name="skor_sl[{{ $kdkues }}][{{ $data_kelas }}]"
-                                                        value="3" required>
+                                                        value="3" required
+                                                        
+                                                        @if ( $trkuesl->where('klkues', $data_kelas)->where('kdkues', $kdkues)->first()->skor == 3 )
+                                                            checked
+                                                        @endif
+                                                        
+
+                                                        >
                                                     <label
                                                         for="3[{{ $kdkues }}][{{ $data_kelas }}]">Setuju</label><br>
                                                     <input type="radio"
                                                         id="4[{{ $kdkues }}][{{ $data_kelas }}]"
                                                         name="skor_sl[{{ $kdkues }}][{{ $data_kelas }}]"
-                                                        value="4" required>
+                                                        value="4" required
+                                                        
+                                                        @if ( $trkuesl->where('klkues', $data_kelas)->where('kdkues', $kdkues)->first()->skor == 4 )
+                                                            checked
+                                                        @endif
+                                                        
+
+                                                        >
                                                     <label for="4[{{ $kdkues }}][{{ $data_kelas }}]">Sangat
                                                         Setuju</label>
                                                 </div>
@@ -129,7 +156,7 @@
 
                                 <div
                                     class=" title  mb-4 w-full text-center bg-amber-500 p-4 text-base leading-5 text-white opacity-100">
-                                    KUESIONER Program Studi: {{ $matakuliah->where('kdkmk', $matkul)->first()->nakmk }}
+                                    EDIT KUESIONER Program Studi: {{ $matakuliah->where('kdkmk', $matkul)->first()->nakmk }}
                                 </div>
                                 {{-- <div class=" title mt-2 text-2xl font-bold text-blue-600 bg-blue-100 text-center w-100 " style="width:100%">
                                     KUESIONER Program Studi: {{ $matakuliah->where('kdkmk', $matkul)->first()->nakmk }}
@@ -168,21 +195,45 @@
                                         <h4>Pilih salah satu :</h4>
                                         <input type="radio" id="1[{{ $data->kdkues }}][{{ $data->kdkmk }}]"
                                             name="skor_sk[{{ $data->kdkues }}][{{ $data->kdkmk }}]" value="1"
-                                            required>
+                                            required
+                                            
+                                            @if($trkuesk->where('kdkmk', $matkul)->where('kdkues', $data->kdkues)->first()->skor==1)
+                                            checked
+                                            @endif
+
+                                            >
                                         <label for="1[{{ $data->kdkues }}][{{ $data->kdkmk }}]">Sangat Tidak
                                             Setuju</label><br>
                                         <input type="radio" id="2[{{ $data->kdkues }}][{{ $data->kdkmk }}]"
                                             name="skor_sk[{{ $data->kdkues }}][{{ $data->kdkmk }}]" value="2"
-                                            required>
+                                            required
+                                            
+                                            @if($trkuesk->where('kdkmk', $matkul)->where('kdkues', $data->kdkues)->first()->skor==2)
+                                                checked
+                                            @endif
+
+                                            >
                                         <label for="2[{{ $data->kdkues }}][{{ $data->kdkmk }}]">Tidak
                                             Setuju</label><br>
                                         <input type="radio" id="3[{{ $data->kdkues }}][{{ $data->kdkmk }}]"
                                             name="skor_sk[{{ $data->kdkues }}][{{ $data->kdkmk }}]" value="3"
-                                            required>
+                                            required
+                                            
+                                            @if($trkuesk->where('kdkmk', $matkul)->where('kdkues', $data->kdkues)->first()->skor==3)
+                                                checked
+                                            @endif
+
+                                            >
                                         <label for="3[{{ $data->kdkues }}][{{ $data->kdkmk }}]">Setuju</label><br>
                                         <input type="radio" id="4[{{ $data->kdkues }}][{{ $data->kdkmk }}]"
                                             name="skor_sk[{{ $data->kdkues }}][{{ $data->kdkmk }}]" value="4"
-                                            required>
+                                            required
+                                            
+                                            @if($trkuesk->where('kdkmk', $matkul)->where('kdkues', $data->kdkues)->first()->skor==4)
+                                                checked
+                                            @endif
+
+                                            >
                                         <label for="4[{{ $data->kdkues }}][{{ $data->kdkmk }}]">Sangat Setuju</label>
                                     </div>
                                 </td>
@@ -380,4 +431,5 @@
         top: 0;
         width: 100%;
     }
+
 </style>

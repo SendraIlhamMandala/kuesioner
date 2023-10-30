@@ -13,21 +13,43 @@
                 <!-- Navigation Links -->
                 @if (Auth()->user()->nmmhs != 'admin')
                     
+             
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Kuesioner') }}
                     </x-nav-link>
                 </div>
+          
 
                 @else
-
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('dashboardAdmin')" :active="request()->routeIs('dashboard')">
+                        {{ __('Dashboard') }}
+                    </x-nav-link>
+                </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('tahunsemesters.index')" :active="request()->routeIs('tahunsemesters.index')">
                         {{ __('Tahun semester') }}
                     </x-nav-link>
                 </div>
 
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('settings.index')" :active="request()->routeIs('setting')">
+                        {{ __('Pengaturan') }}
+                    </x-nav-link>
+                </div>
 
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('export.sk')" :active="request()->routeIs('export.sk')">
+                        {{ __('Export TRKUESK') }}
+                    </x-nav-link>
+                </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('export.sl')" :active="request()->routeIs('export.sl')">
+                        {{ __('Export TRKUESL') }}
+                    </x-nav-link>
+                </div>
                 @endif
 
             </div>

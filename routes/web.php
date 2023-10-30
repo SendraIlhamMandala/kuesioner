@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TahunsemesterController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -11,6 +12,7 @@ use App\Models\Mahasiswa;
 use App\Models\Trkuesk;
 use App\Models\Trkuesl;
 use App\Models\User;
+use Illuminate\Mail\Mailables\Content;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +29,13 @@ Route::get('/', function () {
     return redirect()->route('dashboard');
     return view('welcome');
 });
+
+Route::get('/dashboard', function () {
+    return redirect()->route('dashboard');
+    return view('welcome');
+});
+
+
 
 Route::get('/kuesioner', [Controller::class, 'index'])->name('dashboard')->middleware('auth');
 
@@ -128,6 +137,18 @@ Route::get('/createuser', function () {
 });
 
 Route::get('/export', [Controller::class,'export'] );
+Route::get('/export-sk', [Controller::class,'exportSk'] )->middleware('auth')->name('export.sk');
+Route::get('/export-sl', [Controller::class,'exportSl'] )->middleware('auth')->name('export.sl');
+
 
 Route::resource('/tahunsemesters', TahunsemesterController::class)->middleware('auth');
+Route::resource('/settings', SettingController::class)->middleware('auth');
+Route::post('/updateSettings', [SettingController::class, 'updateSetting'])->middleware('auth');
+
+Route::get('/selesai', [Controller::class, 'selesai'] )->middleware('auth')->name('selesai');
+Route::get('/tutup', [Controller::class, 'tutup'] )->middleware('auth')->name('tutup');
+Route::get('/edit-kuesioner',[Controller::class,'editKuesioner'])->middleware('auth')->name('editKuesioner');
+
+Route::get('/dashboard-admin',[Controller::class,'dashboardAdmin'])->middleware('auth')->name('dashboardAdmin');
+
 require __DIR__ . '/auth.php';

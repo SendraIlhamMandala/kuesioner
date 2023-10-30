@@ -4,184 +4,71 @@
 
 
     </x-slot>
-
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.tailwindcss.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            
+            <div class="mb-4" >
 
+            <a href="{{ route('tahunsemesters.create') }}" class=" items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <i class="fas fa-plus-circle mr-2"></i>
+                <span>Tambah</span>
+              </a>
 
-    </div>
-    </div>
-    <div id="loading" class="fixed inset-0 flex justify-center items-center">
-        <div class="progress">
-            <div class="flex justify-center">
-                <div class="progress-bar progress-bar-striped active" role="progressbar" style="width:100%">
-                    <div class="loadingio-spinner-pulse-2kkny9qh84v">
-                        <div class="ldio-058sko1u4vgc flex justify-center items-center">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        Memproses . . .
-                    </div>
-                </div>
             </div>
-        </div>
+
+            <table id="example" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Tahun semester</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                   
+                    </tr>
+                </thead>
+                <tbody>
+        @foreach ( $tahunsemesters as $tahunsemester )
+                    
+                    <tr>
+                        <td>        {{$tahunsemester->thsms}}                        </td>
+                        <td>        <div class="flex items-center {{ $tahunsemester->status == 'aktif' ? 'bg-green-500 hover:bg-green-700' : 'bg-red-500 hover:bg-red-700' }} text-white font-bold py-2 px-4 rounded">
+                            <span>{{$tahunsemester->status}}</span>
+                          </div></td>
+                        <td>
+                            <a href="{{ route('tahunsemesters.edit', $tahunsemester->id) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</a>
+                            <form action="{{ route('tahunsemesters.destroy', $tahunsemester->id) }}" method="POST" class="inline-block">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
+                            </form>
+                        </td>
+                        
+                    </tr>
+               @endforeach
+                </tbody>
+               
+            </table>
+    
     </div>
+    </div>
+
 
 
 
 </x-app-layout>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.tailwindcss.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+
+
 
 <script>
-    // Fungsi ini dieksekusi saat formulir dengan id "myForm" dikirim
-    $('#myForm').submit(function() {
-        $('#loading').show(); // Tampilkan elemen loading
-    });
 
-    $(document).ready(function() {
-        var titles = $('.title'); // Dapatkan semua elemen dengan class "title"
-        var parents = $('.parent'); // Dapatkan semua elemen dengan class "parent"
-
-        // Dapatkan jarak vertikal setiap elemen title dari atas dokumen
-        var heights = titles.map(function() {
-            return $(this).offset().top;
-        }).get();
-
-        // Dapatkan jarak vertikal setiap elemen parent dari atas dokumen, termasuk tingginya
-        var parentHeights = parents.map(function() {
-            return $(this).offset().top + $(this).outerHeight();
-        }).get();
-
-        // Fungsi dieksekusi saat jendela di-scroll
-        $(window).scroll(function() {
-            var windowTop = $(window)
-        .scrollTop(); // Dapatkan posisi vertikal saat ini dari bilah scroll
-
-            // Iterasi setiap elemen title
-            titles.each(function(i) {
-                if (windowTop > heights[i] && windowTop < parentHeights[i]) {
-                    $(this).addClass(
-                    'fixed top-0 left-0 '); // Tambahkan class "fixed", "top-0", dan "left-0"
-                } else {
-                    $(this).removeClass(
-                    'fixed top-0 left-0 '); // Hapus class "fixed", "top-0", dan "left-0"
-                }
+$('#example').DataTable({
+            "order" : [[ 0, "desc" ]]
             });
-        });
-
-        $('#loading').hide(); // Sembunyikan elemen loading
-    });
 </script>
 
-
-<style type="text/css">
-    @keyframes ldio-058sko1u4vgc-1 {
-        0% {
-            top: 36px;
-            height: 128px
-        }
-
-        50% {
-            top: 60px;
-            height: 80px
-        }
-
-        100% {
-            top: 60px;
-            height: 80px
-        }
-    }
-
-    @keyframes ldio-058sko1u4vgc-2 {
-        0% {
-            top: 41.99999999999999px;
-            height: 116.00000000000001px
-        }
-
-        50% {
-            top: 60px;
-            height: 80px
-        }
-
-        100% {
-            top: 60px;
-            height: 80px
-        }
-    }
-
-    @keyframes ldio-058sko1u4vgc-3 {
-        0% {
-            top: 48px;
-            height: 104px
-        }
-
-        50% {
-            top: 60px;
-            height: 80px
-        }
-
-        100% {
-            top: 60px;
-            height: 80px
-        }
-    }
-
-    .ldio-058sko1u4vgc div {
-        position: absolute;
-        width: 38px
-    }
-
-    .ldio-058sko1u4vgc div:nth-child(1) {
-        left: 31px;
-        background: #93dbe9;
-        animation: ldio-058sko1u4vgc-1 1s cubic-bezier(0, 0.5, 0.5, 1) infinite;
-        animation-delay: -0.2s
-    }
-
-    .ldio-058sko1u4vgc div:nth-child(2) {
-        left: 81px;
-        background: #689cc5;
-        animation: ldio-058sko1u4vgc-2 1s cubic-bezier(0, 0.5, 0.5, 1) infinite;
-        animation-delay: -0.1s
-    }
-
-    .ldio-058sko1u4vgc div:nth-child(3) {
-        left: 131px;
-        background: #5e6fa3;
-        animation: ldio-058sko1u4vgc-3 1s cubic-bezier(0, 0.5, 0.5, 1) infinite;
-        animation-delay: undefineds
-    }
-
-    .loadingio-spinner-pulse-2kkny9qh84v {
-        width: 200px;
-        height: 200px;
-        display: inline-block;
-        overflow: hidden;
-        background: none;
-    }
-
-    .ldio-058sko1u4vgc {
-        width: 100%;
-        height: 100%;
-        position: relative;
-        transform: translateZ(0) scale(1);
-        backface-visibility: hidden;
-        transform-origin: 0 0;
-        /* see note above */
-    }
-
-    .ldio-058sko1u4vgc div {
-        box-sizing: content-box;
-    }
-
-    /* generated by https://loading.io/ */
-
-    .stickyx {
-        position: fixed;
-        top: 0;
-        width: 100%;
-    }
-</style>

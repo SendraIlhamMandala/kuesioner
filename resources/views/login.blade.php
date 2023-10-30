@@ -48,11 +48,17 @@
 
   <section class="section main-section">
     <div class="card">
-      <header class="card-header">
-        <p class="card-header-title">
-          <span class="icon"><i class="mdi mdi-lock"></i></span>
-          Login
-        </p>
+      <header class="">
+        <div class="card-header-icon flex items-center justify-center">
+
+          <img src="{{asset('assets/images/logo/logo1.png')}}" alt="">
+        </div>
+        <div class="flex items-center justify-center">
+
+          <p class=" text-2xl font-bold">
+            Login Kuesioner FISIP UNIGA
+          </p>
+        </div>
       </header>
       <div class="card-content">
         <form method="POST" action="{{ route('login') }}">

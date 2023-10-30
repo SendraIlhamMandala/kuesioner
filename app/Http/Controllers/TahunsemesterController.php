@@ -17,9 +17,10 @@ class TahunsemesterController extends Controller
             //return 404
             return view('errors.403'); 
         }
-        $tahunsemester = Tahunsemester::all();
+        $tahunsemesters = Tahunsemester::all()->sortByDesc('thsms');
+        
 
-        return view('tahunsemesters.index', compact('tahunsemester'));
+        return view('tahunsemesters.index', compact('tahunsemesters'));
     }
 
     /**
@@ -37,7 +38,14 @@ class TahunsemesterController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //store 
+        // dd($request->thsms);
+        $tahunsemester = Tahunsemester::create([
+            'thsms' => $request->thsms,
+            'status' => 'tidak_aktif'
+        ]);
+
+        return redirect()->route('tahunsemesters.index');
     }
 
     /**
@@ -53,7 +61,9 @@ class TahunsemesterController extends Controller
      */
     public function edit(Tahunsemester $tahunsemester)
     {
-        //
+        //edit tahunsemester
+
+        return view('tahunsemesters.edit', compact('tahunsemester'));
     }
 
     /**
@@ -61,7 +71,18 @@ class TahunsemesterController extends Controller
      */
     public function update(Request $request, Tahunsemester $tahunsemester)
     {
-        //
+        if(Tahunsemester::where('status', 'aktif')->exists()&&$request->status=='aktif'){
+            //return 404
+            return redirect()->back()->with('pesan', 'Tahun semester aktif sudah ada');
+        }
+        
+        //update tahunsemester
+        $tahunsemester->update([
+            'thsms' => $request->thsms,
+            'status' => $request->status
+        ]);
+        $tahunsemester->save();
+        return redirect()->route('tahunsemesters.index');
     }
 
     /**
@@ -69,6 +90,10 @@ class TahunsemesterController extends Controller
      */
     public function destroy(Tahunsemester $tahunsemester)
     {
-        //
+        //destroy tahunsemester
+
+        $tahunsemester->delete();
+
+        return redirect()->back();
     }
 }
