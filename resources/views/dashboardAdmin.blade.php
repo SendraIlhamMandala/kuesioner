@@ -1,7 +1,7 @@
 <x-app-layout>
     @section('title', 'Kuesioner')
     <x-slot name="header">
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.tailwindcss.min.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 
    
@@ -13,16 +13,19 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
 
-            <div class="grid grid-cols-2 grid-rows-1 gap-2">
+            <div class="grid md:grid-cols-2 md:grid-rows-1 gap-2">
                 <div> 
                     
-        <a href="#"
-        class="block mx-auto max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+        <div
+        class="block my-4 mx-auto  p-6 bg-white border border-gray-200 rounded-lg shadow  dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
         <h5 class=" font-bold tracking-tight text-gray-900 dark:text-white">
             Mahasiswa yang sudah mengisi kuesioner
         </h5>
-    </a>
+    </div>
 
+    <div
+    class="block my-4 mx-auto  p-6 bg-white border border-gray-200 rounded-lg shadow  dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+    
                     <table id="example" class="display" style="width:100%">
                     <thead>
                         <tr>
@@ -46,14 +49,19 @@
     
                 </table>
     </div>
+    </div>
                 <div>
                     <a href="#"
-                    class="block mx-auto max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                    class="block my-4 mx-auto  p-6 bg-white border border-gray-200 rounded-lg shadow  dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                     <h5 class=" font-bold tracking-tight text-gray-900 dark:text-white">
                         Mahasiswa yang belum mengisi kuesioner
                     </h5>
                 </a>
-                    <table id="example2" class="display" style="width:100%">
+
+                <div
+                class="block my-4 mx-auto  p-6 bg-white border border-gray-200 rounded-lg shadow  dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                
+                    <table id="example2" class="display " style="width:100%">
                     <thead>
                         <tr>
                             <th>Nama</th>
@@ -65,7 +73,7 @@
                     <tbody>
                         @foreach ($nama_belum as $data2)
                             <tr>
-                                <td> {{ $data2['nama'] }} </td>
+                                <td class="px-4 py-4" > {{ $data2['nama'] }} </td>
                                 <td> {{ $data2['nim'] }} </td>
     
     
@@ -74,6 +82,7 @@
                     </tbody>
     
                 </table>
+                </div>
     </div>
             </div>
 
@@ -84,11 +93,11 @@
 
 
 </x-app-layout>
-
+@vite(['resources/css/app.css','resources/js/app.js'])
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.tailwindcss.min.js"></script>
-<script src="https://cdn.tailwindcss.com"></script>
+{{-- <script src="https://cdn.datatables.net/1.13.6/js/dataTables.tailwindcss.min.js"></script> --}}
+{{-- <script src="https://cdn.tailwindcss.com"></script> --}}
 
 
 

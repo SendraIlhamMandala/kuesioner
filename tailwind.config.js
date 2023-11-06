@@ -18,8 +18,12 @@ export default {
             colors: {
                 ...colors,
               },
+            darkMode: false,
+
         },
+        
     },
+    darkMode: 'false',
 
     plugins: [forms],
 };

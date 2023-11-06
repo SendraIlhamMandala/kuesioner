@@ -7,6 +7,8 @@ use App\Models\Mahasiswa;
 use App\Models\Matakuliah;
 use App\Models\Setting;
 use App\Models\Tahunsemester;
+use App\Models\Tbkues;
+use App\Models\Tblmk;
 use App\Models\Trkuesk;
 use App\Models\Trkuesl;
 use App\Models\User;
@@ -173,8 +175,10 @@ class Controller extends BaseController
         $tables             = array("trkuesk");
 
         //or add 5th parameter(array) of specific tables:    array("mytable1","mytable2","mytable3") for multiple tables
-
-        Controller::Export_Database($mysqlHostName, $mysqlUserName, $mysqlPassword, $DbName,  $tables, $backup_name);
+        if (Auth()->user()->nmmhs == 'admin') {
+         
+            Controller::Export_Database($mysqlHostName, $mysqlUserName, $mysqlPassword, $DbName,  $tables, $backup_name);
+        }
 
 
         return 1;
@@ -201,8 +205,10 @@ class Controller extends BaseController
 
         //or add 5th parameter(array) of specific tables:    array("mytable1","mytable2","mytable3") for multiple tables
 
-        Controller::Export_Database($mysqlHostName, $mysqlUserName, $mysqlPassword, $DbName,  $tables, $backup_name);
+        if (Auth()->user()->nmmhs == 'admin') {
 
+        Controller::Export_Database($mysqlHostName, $mysqlUserName, $mysqlPassword, $DbName,  $tables, $backup_name);
+        }
 
         return 1;
     }
@@ -448,4 +454,61 @@ class Controller extends BaseController
             'nama_belum',
         ));
     }
+
+    //export average
+    public function exportAverage()
+    {
+        $average_scores = Trkuesl::average('skor'); // Assuming 'skor' is the score field
+
+        // Export to a csv or any other format as per your requirements
+        // Here's an example with csv
+        $filename = 'average_scores.csv';
+        $handle = fopen($filename, 'w');
+        fputcsv($handle, ['Average Score']);
+        fputcsv($handle, [$average_scores]);
+        fclose($handle);
+
+        return response()->download($filename);
+    }
+
+    public function showScore() 
+    {
+        
+        $tblmk = Tblmk::all()->pluck('kdkmk')->unique();
+        $thisUser = User::where('nimhs', 24012120038)->first();
+
+        $thisUserScores = Trkuesk::where('nimhs', $thisUser->nimhs)->whereIn('kdkmk', $tblmk)->get();
+        foreach ($thisUserScores as $key => $value) {
+            //average score
+            $scoresThisUser[$value->kdkmk][$key] = $value->skor;
+        }
+
+        //scores all kdmk
+        foreach ($tblmk as $key => $value) {
+            $count = count(Trkuesk::where('kdkmk', $value)->where('skor', '!=', 0)->pluck('skor')->toArray());
+            $sum = array_sum(Trkuesk::where('kdkmk', $value)->pluck('skor')->toArray());
+            //avoid divide by zero 
+            $average = $sum / ($count > 0 ? $count : 1);
+            
+            $scoresAll['average'][$value] = $average;
+            $scoresAll['count'][$value] = $count;
+            $scoresAll['sum'][$value] = $sum;
+            
+        }
+
+        // $thisKdmk = Trkuesk::where('kdkmk', 'FAK1011')->get();
+        // dd($thisKdmk);
+
+        //average each kdmk in scores
+        foreach ($scoresThisUser as $key => $value) {
+            $scoresThisUser2[$key] = array_sum($value) / count($value);
+        }
+        dd($tblmk, $thisUser, $scoresThisUser, $scoresThisUser2, $scoresAll);
+   
+        return view('showScore', compact('scores'));
+        
+    }
+    
 }
+
+

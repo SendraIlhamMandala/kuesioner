@@ -104,11 +104,53 @@
     <!-- Responsive Navigation Menu -->
  
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Kuesioner') }}
-            </x-responsive-nav-link>
-        </div>
+       
+       
+             <!-- Navigation Links -->
+             @if (Auth()->user()->nmmhs != 'admin')
+             <div class="pt-2 pb-3 space-y-1">
+                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    {{ __('Kuesioner') }}
+                </x-responsive-nav-link>
+            </div>
+            
+       
+
+             @else
+             <div class="pt-2 pb-3 space-y-1">
+                <x-responsive-nav-link :href="route('dashboardAdmin')" :active="request()->routeIs('dashboard')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+            </div>
+
+            <div class="pt-2 pb-3 space-y-1">
+                <x-responsive-nav-link :href="route('tahunsemesters.index')" :active="request()->routeIs('tahunsemesters.index')">
+                    {{ __('Tahun semester') }}
+                </x-responsive-nav-link>
+            </div>
+
+            <div class="pt-2 pb-3 space-y-1">
+                <x-responsive-nav-link :href="route('settings.index')" :active="request()->routeIs('setting')">
+                    {{ __('Pengaturan') }}
+                </x-responsive-nav-link>
+            </div>
+
+            <div class="pt-2 pb-3 space-y-1">
+                <x-responsive-nav-link :href="route('export.sk')" :active="request()->routeIs('export.sk')">
+                    {{ __('Export TRKUESK') }}
+                </x-responsive-nav-link>
+            </div>
+
+            <div class="pt-2 pb-3 space-y-1">
+                <x-responsive-nav-link :href="route('export.sl')" :active="request()->routeIs('export.sl')">
+                    {{ __('Export TRKUESL') }}
+                </x-responsive-nav-link>
+            </div>
+           
+            
+             @endif
+
+ 
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">

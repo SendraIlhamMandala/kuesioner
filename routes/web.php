@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Kuesioner;
 use App\Models\Mahasiswa;
+use App\Models\Tblmk;
 use App\Models\Trkuesk;
 use App\Models\Trkuesl;
 use App\Models\User;
@@ -151,4 +152,22 @@ Route::get('/edit-kuesioner',[Controller::class,'editKuesioner'])->middleware('a
 
 Route::get('/dashboard-admin',[Controller::class,'dashboardAdmin'])->middleware('auth')->name('dashboardAdmin');
 
+Route::get('/export/average',[Controller::class,'exportAverage'])->middleware('auth')->name('exportAverage');
+Route::get('/show-score',[Controller::class,'showScore'])->middleware('auth')->name('showScore');
+Route::get('/export/score', function() {
+
+    $tblmk = Tblmk::all();
+    $trkuesk = Trkuesk::where('kdkmk','UNV8046')->where('skor','!=',0)->get();
+    $trkueskKdkues = $trkuesk->pluck('kdkues')->unique();
+    foreach($trkueskKdkues as $key => $value) {
+        $skor = $trkuesk->where('kdkues', $value)->pluck('skor')->toArray();
+        $trkueskKdkues2['average'][$key] = array_sum($skor) / count($skor);
+        $trkueskKdkues2['sum'][$key] = array_sum($skor);
+        $trkueskKdkues2['count'][$key] = count($skor);
+    }
+    dd($trkuesk, $trkueskKdkues, $trkueskKdkues2, $tblmk);
+    
+    
+
+})->middleware('auth')->name('exportScore');
 require __DIR__ . '/auth.php';
