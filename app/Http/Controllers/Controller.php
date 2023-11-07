@@ -132,28 +132,33 @@ class Controller extends BaseController
 
     public function export()
     {
+    $tblmk = Tblmk::all()->pluck('kdkmk')->toArray();
+
+        $trkuesk2 = Trkuesk::whereIn('kdkmk', $tblmk)->where('skor','!=',0)->pluck('kdkmk')->unique(); 
+        $matkul = Tblmk::whereIn('kdkmk', $trkuesk2)->get();
+        
+        return view( 'export', compact('trkuesk2','matkul'));
 
 
+        // $DB_HOST = "localhost";
+        // $DB_USER = "root";
+        // $DB_PASS = "";
+        // $DB_NAME = "kuisioner";
 
-        $DB_HOST = "localhost";
-        $DB_USER = "root";
-        $DB_PASS = "";
-        $DB_NAME = "kuisioner";
+        // //ENTER THE RELEVANT INFO BELOW
+        // $mysqlUserName      = "root";
+        // $mysqlPassword      = "";
+        // $mysqlHostName      = "localhost";
+        // $DbName             = "kuisioner";
+        // $backup_name        = "mybackup.sql";
+        // $tables             = array("trkuesl");
 
-        //ENTER THE RELEVANT INFO BELOW
-        $mysqlUserName      = "root";
-        $mysqlPassword      = "";
-        $mysqlHostName      = "localhost";
-        $DbName             = "kuisioner";
-        $backup_name        = "mybackup.sql";
-        $tables             = array("trkuesl");
+        // //or add 5th parameter(array) of specific tables:    array("mytable1","mytable2","mytable3") for multiple tables
 
-        //or add 5th parameter(array) of specific tables:    array("mytable1","mytable2","mytable3") for multiple tables
-
-        Controller::Export_Database($mysqlHostName, $mysqlUserName, $mysqlPassword, $DbName,  $tables, $backup_name);
+        // Controller::Export_Database($mysqlHostName, $mysqlUserName, $mysqlPassword, $DbName,  $tables, $backup_name);
 
 
-        return 1;
+        // return 1;
     }
 
     public function exportSk()
