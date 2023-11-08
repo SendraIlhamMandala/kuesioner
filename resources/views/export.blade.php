@@ -24,6 +24,26 @@
 
             </div>
              
+
+            <div class="max-w-7xl p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+              
+                @foreach ($layanan as $key => $item)
+                
+                <a href="{{ route('exportLayanan', $key)}}">
+                    <div class="block my-4 mx-auto  p-6 bg-white border border-gray-200 rounded-lg shadow  dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                            <h5 class=" font-bold tracking-tight text-gray-900 dark:text-white">
+                                
+                                {{$item}}
+                            </h5>
+                        </div>
+                    </a>
+
+                @endforeach
+
+
+            </div>
+             
+
         </div>
     </div>
 
