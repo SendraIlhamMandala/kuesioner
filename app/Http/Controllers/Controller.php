@@ -327,6 +327,11 @@ class Controller extends BaseController
         return redirect()->route('tutup');
     }
 
+    // dd(Auth()->user()->comments->first());
+    if(Auth()->user()->comments->first() != NULL &&  Auth()->user()->comments->first()->exists()){
+        return redirect()->route('selesai');
+    }
+
     $thsms_active = Tahunsemester::where('status', 'aktif')->first();
     $mahasiswa = Mahasiswa::where('nimhs', Auth()->user()->nimhs)->first();
     $trkuesl = Trkuesl::where('nimhs', Auth()->user()->nimhs)->where('thsms', $thsms_active->thsms)->get();

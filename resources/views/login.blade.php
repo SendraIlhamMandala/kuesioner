@@ -72,7 +72,7 @@
             </div>
             <x-input-error :messages="$errors->get('nimhs')" class="mt-2" />
               <p class="help">
-              Please enter your nim
+              Masukkan nim anda
             </p>
           </div>
 
@@ -85,7 +85,7 @@
 
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
               <p class="help">
-              Please enter your password
+              Masukkan password anda
             </p>
           </div>
 

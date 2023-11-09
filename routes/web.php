@@ -144,7 +144,7 @@ Route::get('/createuser', function () {
     User::insert($users);
 });
 
-Route::get('/export', [Controller::class,'export'] );
+Route::get('/export', [Controller::class,'export'] )->middleware('auth')->name('export');
 Route::get('/export-sk', [Controller::class,'exportSk'] )->middleware('auth')->name('export.sk');
 Route::get('/export-sl', [Controller::class,'exportSl'] )->middleware('auth')->name('export.sl');
 
