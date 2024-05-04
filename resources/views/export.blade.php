@@ -42,6 +42,26 @@
 
 
             </div>
+
+            @if (App\Models\Hasil::where('tahunsemester_id', App\Models\Tahunsemester::where('status', 'aktif')->first()->id)->exists())
+                
+            <div class="max-w-7xl p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                
+                
+                <a href="{{ route('exportHasilSurvey', App\Models\Tahunsemester::where('status', 'aktif')->first()->id)}}">
+                    <div class="block my-4 mx-auto  p-6 bg-white border border-gray-200 rounded-lg shadow  dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                        <h5 class=" font-bold tracking-tight text-gray-900 dark:text-white">
+                            
+                            Survey Penerimaan Mahasiswa Baru
+                        </h5>
+                    </div>
+                </a>
+                
+                
+                
+                
+            </div>
+            @endif
              
 
         </div>

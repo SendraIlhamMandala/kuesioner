@@ -5,12 +5,14 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TahunsemesterController;
 use App\Models\Comment;
+use App\Models\Hasil;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
 use App\Models\Kuesioner;
 use App\Models\Mahasiswa;
 use App\Models\Matakuliah;
+use App\Models\Progress;
 use App\Models\Setting;
 use App\Models\Tahunsemester;
 use App\Models\Tbkues;
@@ -20,7 +22,9 @@ use App\Models\Trkuesl;
 use App\Models\User;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Hash;
 
 /*
 |--------------------------------------------------------------------------
@@ -131,18 +135,22 @@ Route::post('/dashboard/{nimhs}', [Controller::class,'kuesionerDashboardStore'] 
 Route::get('/createuser', function () {
     $mahasiswas = Mahasiswa::all();
     $users = [];
-    foreach ($mahasiswas as $key => $value) {
-        $users[] = [
-            'nimhs' => $value->nimhs,
-            'nmmhs' => $value->nmmhs,
-            'email' => $value->email,
-            'password' => bcrypt($value->nimhs),
-            'created_at' => now(),
-        ];
-    }
-
-    User::insert($users);
+    User::insertOrIgnore(
+        $mahasiswas->map(function ($mahasiswa) {
+            return [
+                'nimhs' => $mahasiswa->nimhs,
+                'nmmhs' => $mahasiswa->nmmhs,
+                'email' => $mahasiswa->email,
+                'password' => bcrypt($mahasiswa->nimhs),
+                'created_at' => now(),
+            ];
+        })->toArray()
+    );
 });
+
+Route::get('/dosen', [Controller::class,'dosen'] )->middleware('auth')->name('dosen');
+Route::get('/dosen/{id}', [Controller::class,'dosenMatkul'] )->middleware('auth')->name('dosen.matkul');
+
 
 Route::get('/export', [Controller::class,'export'] )->middleware('auth')->name('export');
 Route::get('/export-sk', [Controller::class,'exportSk'] )->middleware('auth')->name('export.sk');
@@ -168,5 +176,38 @@ Route::get('/export/layanan/{layanan}',[Controller::class,'exportLayanan'])->mid
 Route::get('/dashboard-comment', [Controller::class,'dashboardComment'])->middleware('auth')->name('dashboardComment');
 
 Route::post('/dashboard-comment/{nimhs}', [Controller::class,'dashboardCommentStore'] )->name('dashboardComment.store');
+
+Route::get('/tests', function () {
+    $current_progress =  Progress::where('user_id', Auth::user()->id)->where('tahunsemester_id', Tahunsemester::where('status', 'aktif')->first()->id)->first();
+    Progress::updateOrCreate(
+        [
+            'user_id' => Auth::user()->id,
+            'tahunsemester_id' => Tahunsemester::where('status', 'aktif')->first()->id,
+            'status' => 'progress',
+            'kdkmk' => '-',
+        ],
+        [
+            'kelas' => json_encode(array_merge(json_decode(optional($current_progress)->kelas, true) ?: [], ['F'])),
+        ]
+    );
+    
+    return response()->json($current_progress);
+    
+    dd($current_progress);
+    // $hasils = Hasil::all();
+
+    // foreach ($hasils as $key => $value) {
+    //     dump($value->hasil);
+    //     dump(json_decode($value->hasil, true));
+    // }
+
+});
+
+Route::get('testsurvey/{thsms}', [Controller::class,'exportHasilSurvey'] )->middleware('auth')->name('exportHasilSurvey');
+
+Route::post('save_kuesioner_sl', [Controller::class,'saveKuesSl'] )->middleware('auth')->name('save_kues_sl');
+Route::post('save_kuesioner_sk', [Controller::class,'saveKuesSk'] )->middleware('auth')->name('save_kues_sk');
+Route::post('save_kuesioner_hasil', [Controller::class,'saveKuesHasil'] )->middleware('auth')->name('save_kues_hasil');
+// Route::get('save_kuesioner_hasil', [Controller::class,'saveKuesHasil'] )->middleware('auth')->name('save_kues_hasil');
 
 require __DIR__ . '/auth.php';

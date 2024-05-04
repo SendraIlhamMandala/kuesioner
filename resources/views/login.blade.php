@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Login - Admin One Tailwind CSS Admin Dashboard</title>
+  <title>Login</title>
 
   <!-- Tailwind is included -->
   <link rel="stylesheet" href="{{asset('assets/css/main.css')}}">
@@ -33,14 +33,7 @@
   <meta property="twitter:image:height" content="960">
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-130795909-1"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'UA-130795909-1');
-  </script>
-
+  
 </head>
 <body>
 

@@ -11,4 +11,9 @@ class Tahunsemester extends Model
     //guarded
     protected $guarded = [];  
 
+    public function hasils()
+    {
+        return $this->hasMany(Hasil::class);
+    }
+
 }
