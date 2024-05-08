@@ -55,7 +55,12 @@ class SettingController extends Controller
      */
     public function update(Request $request, Setting $setting)
     {
-        //
+        // dd($request->all(), $setting);
+        
+        $setting->is_open = $request->is_open;
+        
+        $setting->save();
+        return redirect()->back();
     }
 
     /**

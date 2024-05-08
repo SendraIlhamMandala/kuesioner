@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -57,4 +59,18 @@ class User extends Authenticatable
     {
         return $this->hasMany(Hasil::class);
     }
+
+    //has many trkuliah
+    public function trkuliahs() :HasMany
+    {
+        return $this->hasMany(Trkuliah::class , 'nimhs' , 'nimhs');
+    }
+
+public function trkuesks(): HasMany
+{
+    return $this->hasMany(Trkuesk::class, 'nimhs', 'nimhs')
+                ->where('thsms', Tahunsemester::where('status', 'aktif')->first()->thsms)
+                ->whereIn('kdkmk', $this->trkuliahs->pluck('kdkmk'));
+}
+
 }

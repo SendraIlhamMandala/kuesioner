@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\DosenController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TahunsemesterController;
@@ -20,6 +21,7 @@ use App\Models\Tblmk;
 use App\Models\Trkuesk;
 use App\Models\Trkuesl;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -170,6 +172,7 @@ Route::get('/dashboard-admin',[Controller::class,'dashboardAdmin'])->middleware(
 Route::get('/export/average',[Controller::class,'exportAverage'])->middleware('auth')->name('exportAverage');
 Route::get('/show-score',[Controller::class,'showScore'])->middleware('auth')->name('showScore');
 Route::get('/export/matkul/{matkul}',[Controller::class,'exportMatkul'])->middleware('auth')->name('exportMatkul');
+Route::get('/export/matkul/{matkul}/{dosen}',[DosenController::class,'exportMatkulDosen'])->middleware('auth')->name('exportMatkulDosen');
 Route::get('/export/layanan/{layanan}',[Controller::class,'exportLayanan'])->middleware('auth')->name('exportLayanan');
 
 
@@ -209,5 +212,12 @@ Route::post('save_kuesioner_sl', [Controller::class,'saveKuesSl'] )->middleware(
 Route::post('save_kuesioner_sk', [Controller::class,'saveKuesSk'] )->middleware('auth')->name('save_kues_sk');
 Route::post('save_kuesioner_hasil', [Controller::class,'saveKuesHasil'] )->middleware('auth')->name('save_kues_hasil');
 // Route::get('save_kuesioner_hasil', [Controller::class,'saveKuesHasil'] )->middleware('auth')->name('save_kues_hasil');
+
+Route::get('bulan', function () {
+    
+$today = Carbon::now()->isoFormat('MMMM');
+// "Minggu, 28 Juni 2020"
+    dd($today);
+});
 
 require __DIR__ . '/auth.php';

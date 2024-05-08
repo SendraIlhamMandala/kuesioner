@@ -34,6 +34,7 @@
                                     <th>Matakuliah </th>
 
                                     <th> download </th>
+                                    <th> download 2 </th>
 
 
 
@@ -41,7 +42,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($matakuliah as $data)
-                                    <tr >
+                                    <tr>
                                         <td>
 
                                             {{ $data[0]->kdkmk }}
@@ -54,11 +55,17 @@
                                         </td>
 
                                         <td>
-    <a href="{{ route('exportMatkul', $data[0]->kdkmk) }}"
-       class="inline-block px-4 py-2 bg-blue-500 text-white font-bold text-xs uppercase tracking-widest rounded hover:bg-blue-700 focus:outline-none focus:border-blue-700 focus:ring focus:ring-blue-200 active:bg-blue-600 transition ease-in-out duration-150">
-        Download
-    </a>
-</td>
+                                            <a href="{{ route('exportMatkul', $data[0]->kdkmk) }}"
+                                                class="inline-block px-4 py-2 bg-blue-500 text-white font-bold text-xs uppercase tracking-widest rounded hover:bg-blue-700 focus:outline-none focus:border-blue-700 focus:ring focus:ring-blue-200 active:bg-blue-600 transition ease-in-out duration-150">
+                                                Download
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('exportMatkulDosen', [$data[0]->kdkmk,$dosen[0]->id]) }}"
+                                                class="inline-block px-4 py-2 bg-blue-500 text-white font-bold text-xs uppercase tracking-widest rounded hover:bg-blue-700 focus:outline-none focus:border-blue-700 focus:ring focus:ring-blue-200 active:bg-blue-600 transition ease-in-out duration-150">
+                                                Download
+                                            </a>
+                                        </td>
 
 
 

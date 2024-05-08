@@ -115,9 +115,9 @@
 
             </tbody>
             </table>
-            <button class=" text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            <button class=" mt-4 text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 style="width: 100%">
-                Submit
+                Simpan
             </button>
 
             </form>
@@ -201,7 +201,9 @@
                         </tbody>
                     </table>
                     <button type="submit"
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button>
+                    class=" mt-4 text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    style="width: 100%">Simpan</button>
+                        
                 </form>
             </div>
         </div>
@@ -213,10 +215,10 @@
             <div class=" title  mb-4 w-full text-center bg-amber-500 p-4 text-base leading-5 text-white opacity-100">
             KUESIONER Penerimaan Mahasiswa Baru
         </div>
-        <form id = "formhasil_id">
+        <form id = "formhasil_hasil">
 
 
-                    <input type="hidden" name="survey_'title'" value="KUESIONER Penerimaan Mahasiswa Baru">
+                    <input type="hidden" name="'title'" value="KUESIONER Penerimaan Mahasiswa Baru">
 
                     <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
 
@@ -229,7 +231,7 @@
 
                     <div>
                         <h4>Pilih salah satu :</h4>
-                        <select id="jalur" name="survey_jalur"
+                        <select id="jalur" name="jalur"
                             class="w-full p-2 border border-gray-300 rounded-md">
                             <option value="reguler">a. Reguler</option>
                             <option value="undangan">b. Undangan</option>
@@ -248,8 +250,8 @@
 
                     <div>
                         <h4>Pilih salah satu :</h4>
-                        <select id="jenisKelamin" name="survey_jenis kelamin"
-                            class="w-full p-2 border border-gray-300 rounded-md">
+                        <select id="jenisKelamin" name="jenis kelamin"
+                            class="w-full p-2 border border-gray-300 rounded-md mb-2">
                             <option value="laki-laki">a. Laki laki</option>
                             <option value="perempuan">b. Perempuan</option>
                         </select>
@@ -262,27 +264,48 @@
                             <legend class="block text-sm font-semibold mb-2">Isian singkat</legend>
                             <div>
                                 <label for="question13">11. Darimana anda mengetahui info PMB FISIP UNIGA</label>
-                                <input required type="text" id="question13"
-                                    name="survey_string_Darimana anda mengetahui info PMB FISIP UNIGA"
-                                    class="w-full p-2 border border-gray-300 rounded-md mb-2">
+                                <textarea required id="question13"
+                                    name="string_Darimana anda mengetahui info PMB FISIP UNIGA"
+                                    class="w-full p-2 border border-gray-300 rounded-md mb-2" maxlength="500"></textarea>
+                                    <div class="text-right text-xs text-gray-500">
+                                        <span id="count-13"></span>/500
+                                    </div>
                             </div>
                             <div>
                                 <label for="question14">12. Alasan anda memilih FISIP UNIGA</label>
-                                <input required type="text" id="question14"
-                                    name="survey_string_Alasan anda memilih FISIP UNIGA"
-                                    class="w-full p-2 border border-gray-300 rounded-md mb-2">
+                                <textarea required id="question14" name="string_Alasan anda memilih FISIP UNIGA"
+                                    class="w-full p-2 border border-gray-300 rounded-md mb-2" maxlength="500"></textarea>
+                                    <div class="text-right text-xs text-gray-500">
+                                        <span id="count-14"></span>/500
+                                    </div>
                             </div>
                             <div>
                                 <label for="question15">13. Saran dan Harapan Anda tentang Layanan PMB FISIP
                                     UNIGA</label>
-                                <textarea required id="question15" name="survey_string_Saran dan Harapan Anda tentang Layanan PMB FISIP UNIGA"
-                                    class="w-full p-2 border border-gray-300 rounded-md resize-none"></textarea>
+                                <textarea required id="question15" name="string_Saran dan Harapan Anda tentang Layanan PMB FISIP UNIGA"
+                                    class="w-full p-2 border border-gray-300 rounded-md resize-none" maxlength="1000"></textarea>
+                                <div class="text-right text-xs text-gray-500">
+                                    <span id="count-15"></span>/1000
+                                </div>
+                                <script>
+                                    const textareaIds = ['13', '14', '15'];
+                                    textareaIds.forEach(id => {
+                                        const textarea = document.getElementById(`question${id}`);
+                                        const countEl = document.getElementById(`count-${id}`);
+                                        console.log(countEl);
+                                        const updateCount = () => countEl.textContent = textarea.value.length;
+                                        textarea.addEventListener('input', updateCount);
+                                    });
+
+                                    
+                                </script>
                             </div>
                         </fieldset>
                     </div>
 
-                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Submit
+                <button type="submit" class=" mt-4 text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                style="width: 100%">
+                    Simpan
                 </button>
         </form>
     </div>
@@ -290,15 +313,16 @@
     </div>
 
 
-    @if ($kelas_kuesioner->count() > 0)
+    {{-- @if ($kelas_kuesioner->count() > 0)
         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             Submit
         </button>
-    @else
-        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Submit
+    @else --}}
+        <button onclick="window.location.reload();" class=" mt-4 text-center bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+        style="width: 100%">
+            Lanjut 
         </button>
-    @endif
+    {{-- @endif --}}
 
     </div>
     </div>
@@ -350,15 +374,15 @@
           <legend class="block text-sm font-semibold mb-2">${index + 3}. ${question}</legend>
           <div class="space-y-2">
             <div>
-              <input required type="radio" id="${question}_sangat_baik" name="survey_range_${question}" value="sangat_baik" class="mr-2">
+              <input required type="radio" id="${question}_sangat_baik" name="range_${question}" value="sangat_baik" class="mr-2">
               <label for="${question}_sangat_baik">Sangat Baik</label>
             </div>
             <div>
-              <input required type="radio" id="${question}_cukup" name="survey_range_${question}" value="cukup" class="mr-2">
+              <input required type="radio" id="${question}_cukup" name="range_${question}" value="cukup" class="mr-2">
               <label for="${question}_cukup">Cukup</label>
             </div>
             <div>
-              <input required type="radio" id="${question}_kurang" name="survey_range_${question}" value="kurang" class="mr-2">
+              <input required type="radio" id="${question}_kurang" name="range_${question}" value="kurang" class="mr-2">
               <label for="${question}_kurang">Kurang</label>
             </div>
           </div>
@@ -375,12 +399,15 @@
     });
     const classProgress = @json($kelas_progress);
     const courseProgress = @json($kdkmk_progress);
+    const statusProgress = @json($status_progress);
+    //console.log(classProgress, courseProgress, statusProgress);
 
     $(document).ready(function() {
         // $('#loading').show(); // Tampilkan elemen loading
 
         markProgress(classProgress, 'form_');
         markProgress(courseProgress, 'formsk_');
+        markProgress(statusProgress, 'formhasil_');
         // markProgress(courseProgress, 'formhasil_');
         showTitle();
         // $('#loading').show(); // Tampilkan elemen loading
@@ -408,9 +435,9 @@
 
         var isValid = true;
         var formIdParts = formId.split('_');
-        console.log(formId);
+        //console.log(formId);
 
-        console.log(formIdParts);
+        //console.log(formIdParts);
         // return false;
         var kelas = formIdParts[formIdParts.length - 1];
         $(this).find('input[required]').each(function() {
@@ -439,17 +466,17 @@
 
 
     function save_kues(data, kelas, jenis) {
-        // console.log(data, kelas, jenis);
+        // //console.log(data, kelas, jenis);
         // return false;
         const form = document.getElementById(data);
-        // console.log(form,form.closest('.parent'));
+        // //console.log(form,form.closest('.parent'));
         const form_child_title = form.closest('.parent').querySelector(
             '.title'); // Use querySelector to directly get the title element
-        // console.log(form_child_title);
+        // //console.log(form_child_title);
         const formData = new FormData(form);
         const kues = Object.fromEntries(formData.entries());
         const kuesJson = JSON.stringify(kues); // Convert kues object to JSON string
-        console.log(formData.entries(), kuesJson);
+        //console.log(formData.entries(), kuesJson);
         // const route = jenis === 'form' ? "{{ route('save_kues_sl') }}" : "{{ route('save_kues_sk') }}";
         var route = "";
         if (jenis === 'form') {
@@ -458,9 +485,9 @@
             route = "{{ route('save_kues_sk') }}";
         } else if (jenis === 'formhasil') {
             route = "{{ route('save_kues_hasil') }}";
-            console.log('route 1',route);
+            //console.log('route 1',route);
         }
-        // console.log('route 2',route);
+        // //console.log('route 2',route);
 
         $.ajax({
             type: "POST",
@@ -474,11 +501,11 @@
             success: function(response) {
                 form_child_title.style.backgroundColor = 'green'; // Use style property to change the background color to green
 
-                console.log(response);
+                //console.log(response);
                 // alert('Data berhasil disimpan');
                 $('#loading').hide(); // Tampilkan elemen loading
 
-                createSuccessAlert();
+                createSuccessAlert(response);
 
 
 
@@ -500,7 +527,7 @@
                 }, 1000); // 0.5s transition duration
 
                 if (jenis === 'formhasil') {
-                    location.reload();
+                    // location.reload();
                 }
 
                 // form.style.display = 'none'; // Hide the form after a successful AJAX call
@@ -508,7 +535,7 @@
             error: function(jqXHR, textStatus, errorThrown) {
                 $('#loading').hide(); // Tampilkan elemen loading
 
-                console.log(textStatus, errorThrown);
+                //console.log(textStatus, errorThrown);
             },
         })
     }
@@ -557,7 +584,7 @@
                     $('#fixed-title').hide();
 
                 }
-                // console.log(`windowTop: ${windowTop} > heights[${i}]: ${heights[i]} && windowTop: ${windowTop} < parentHeights[${i}]: ${parentHeights[i]}`);
+                // //console.log(`windowTop: ${windowTop} > heights[${i}]: ${heights[i]} && windowTop: ${windowTop} < parentHeights[${i}]: ${parentHeights[i]}`);
 
 
             })
@@ -569,12 +596,12 @@
         $('#loading').hide(); // Sembunyikan elemen loading
     }
 
-    function createSuccessAlert() {
+    function createSuccessAlert(res) {
         var successElement = document.createElement('div');
         successElement.classList.add('fixed', 'inset-0', 'flex', 'items-center', 'justify-center',
-            'p-4', 'rounded', 'text-green-800', 'bg-green-200', 'w-1/2', 'h-20', 'm-auto',
+            'p-4', 'rounded', 'text-'+res.color+'-800', 'bg-'+res.color+'-200', 'w-1/2', 'h-20', 'm-auto',
             'z-50');
-        successElement.textContent = 'Data berhasil disimpan';
+        successElement.textContent = res.message;
 
         // Create a wrapper to center the success message
         var wrapper = document.createElement('div');
@@ -588,6 +615,7 @@
             wrapper.remove();
         }, 3000); // Remove the success element after 3 seconds
     }
+    // createSuccessAlert({ message: 'Success', color: 'red' });
 </script>
 
 

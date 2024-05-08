@@ -6,7 +6,9 @@
     </x-slot>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-    <div class="py-12">
+
+    
+    <div class="py-6">
         <div class="max-w-7xl flex justify-center mx-auto sm:px-6 lg:px-8">
 
 
@@ -48,6 +50,28 @@
         </div>
     </div>
 
+    <div class="">
+        <div class="max-w-7xl flex justify-center mx-auto sm:px-6 lg:px-8">
+
+
+            <div
+                class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <form action="{{ route('settings.update', $settings->where('id', 2)->first()->id) }}" method="POST">
+                @method('PUT')
+                @csrf
+                <div class="mt-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="tahunAjaran">Tahun Ajaran</label>
+            <input name="is_open" value="{{ $settings->where('id', 2)->first()->is_open }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="tahunAjaran" type="text" placeholder="Masukkan tahun ajaran">
+        </div>
+        
+        <div class="mt-4">
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">Simpan</button>
+        </div>
+    </form>
+        
+    </div>
+</div>
+</div>
 
 
 

@@ -16,6 +16,7 @@ use App\Models\Tblmk;
 use App\Models\Trkuesk;
 use App\Models\Trkuesl;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
@@ -41,7 +42,8 @@ class Controller extends BaseController
     public function dosenMatkul($nmdosen)
     {
 
-        $dosen = Dosen::where('nmdosen', $nmdosen)->get();
+        $dosen = Dosen::where('nmdosen', $nmdosen)->where('thsms', Tahunsemester::where('status', 'aktif')->first()->thsms)->get();
+        // dd($dosen->pluck('kdkmk')->toArray());
         $matakuliah = [];
 
         foreach ($dosen as $key => $value) {
@@ -68,7 +70,7 @@ class Controller extends BaseController
         }
 
         $thsms_active = Tahunsemester::where('status', 'aktif')->first();
-        $mahasiswa = Mahasiswa::where('nimhs', Auth()->user()->nimhs)->first();
+        // $mahasiswa = Mahasiswa::where('nimhs', Auth()->user()->nimhs)->first();
         $trkuesl = Trkuesl::where('nimhs', Auth()->user()->nimhs)->where('thsms', $thsms_active->thsms)->get();
         $kuesioner = Kuesioner::all();
         $kelas_kuesioner = collect(array_unique($trkuesl->pluck('klkues')->toArray()));
@@ -76,7 +78,8 @@ class Controller extends BaseController
 
 
         $trkuesk = Trkuesk::where('nimhs', Auth()->user()->nimhs)->where('thsms', $thsms_active->thsms)->get();
-
+        // $trkuesk = Auth()->user()->trkuesks;
+        // dd($trkuesk,$trkuesk1);
 
 
         $matakuliah = Matakuliah::all();
@@ -91,7 +94,8 @@ class Controller extends BaseController
 
         $kelas_progress = $progress ? json_decode($progress->kelas, true) : null;
         $kdkmk_progress = $progress ? json_decode($progress->kdkmk, true) : null;
-
+        $status_progress = $progress ? json_decode($progress->status, true) : null;
+        // dd($progress,$progress->status,$status_progress);
         // // redirect if done 
 
         $incomplete = $trkuesl->where('skor', 0)->first();
@@ -99,8 +103,8 @@ class Controller extends BaseController
         $incomplete_sk = $trkuesk->where('skor', 0)->first();
         
         $hasil = Hasil::where('user_id', Auth()->user()->id)->where('tahunsemester_id', $thsms_active->id)->first();
-
-        if (!$incomplete && !$incomplete_sk && $hasil ) {
+        // dd($hasil, $incomplete, $incomplete_sk);
+        if ($incomplete == null && $incomplete_sk == null && !$hasil == null ) {
             return redirect()->route('dashboardComment');
         }
 
@@ -114,7 +118,7 @@ class Controller extends BaseController
         ];
 
         return view('dashboard', compact(
-            'mahasiswa',
+            // 'mahasiswa',
             'trkuesl',
             'kuesioner',
             'kelas_kuesioner',
@@ -126,6 +130,7 @@ class Controller extends BaseController
             'kuesionerA',
             'kelas_progress',
             'kdkmk_progress',
+            'status_progress',
 
 
         ));
@@ -198,8 +203,10 @@ class Controller extends BaseController
             'E' => 'LAYANAN SARANA PRASARANA',
             'F' => 'LAYANAN KEUANGAN'
         ];
-        $trkuesk2 = Trkuesk::whereIn('kdkmk', $tblmk)->where('skor', '!=', 0)->pluck('kdkmk')->unique();
-        $trkuesl = Trkuesl::whereIn('klkues', $kelas)->where('skor', '!=', 0)->pluck('klkues')->unique();
+        $thsms_active = Tahunsemester::where('status', 'aktif')->first()->thsms;
+
+        $trkuesk2 = Trkuesk::whereIn('kdkmk', $tblmk)->where('skor', '!=', 0)->where('thsms', $thsms_active)->pluck('kdkmk')->unique();
+        $trkuesl = Trkuesl::whereIn('klkues', $kelas)->where('skor', '!=', 0)->where('thsms', $thsms_active)->pluck('klkues')->unique();
         $matkul = Tblmk::whereIn('kdkmk', $trkuesk2)->get();
         $layanan = collect($kelasNama)->filter(function ($value, $key) use ($trkuesl) {
             return $trkuesl->contains($key);
@@ -245,11 +252,12 @@ class Controller extends BaseController
         $DbName             = "kuisioner";
         $backup_name        = "TRKUESK.sql";
         $tables             = array("trkuesk");
+        $thsms_active       = Tahunsemester::where('status', 'aktif')->first()->thsms;
 
         //or add 5th parameter(array) of specific tables:    array("mytable1","mytable2","mytable3") for multiple tables
         if (Auth()->user()->nmmhs == 'admin') {
 
-            Controller::Export_Database($mysqlHostName, $mysqlUserName, $mysqlPassword, $DbName,  $tables, $backup_name);
+            Controller::Export_Database($mysqlHostName, $mysqlUserName, $mysqlPassword, $DbName,  $tables, $backup_name, $thsms_active);
         }
 
 
@@ -274,12 +282,14 @@ class Controller extends BaseController
         $DbName             = "kuisioner";
         $backup_name        = "TRKUESL.sql";
         $tables             = array("trkuesl");
+        $thsms_active       = Tahunsemester::where('status', 'aktif')->first()->thsms;
+
 
         //or add 5th parameter(array) of specific tables:    array("mytable1","mytable2","mytable3") for multiple tables
 
         if (Auth()->user()->nmmhs == 'admin') {
 
-            Controller::Export_Database($mysqlHostName, $mysqlUserName, $mysqlPassword, $DbName,  $tables, $backup_name);
+            Controller::Export_Database($mysqlHostName, $mysqlUserName, $mysqlPassword, $DbName,  $tables, $backup_name , $thsms_active);
         }
 
         return 1;
@@ -440,7 +450,7 @@ class Controller extends BaseController
 
 
 
-    public static function Export_Database($host, $user, $pass, $name,  $tables = false, $backup_name = false)
+    public static function Export_Database($host, $user, $pass, $name,  $tables = false, $backup_name = false , $thsms)
     {
         $mysqli = new mysqli($host, $user, $pass, $name);
         $mysqli->select_db($name);
@@ -450,11 +460,13 @@ class Controller extends BaseController
         while ($row = $queryTables->fetch_row()) {
             $target_tables[] = $row[0];
         }
+        
         if ($tables !== false) {
             $target_tables = array_intersect($target_tables, $tables);
         }
+
         foreach ($target_tables as $table) {
-            $result         =   $mysqli->query('SELECT * FROM ' . $table);
+            $result         =   $mysqli->query('SELECT * FROM ' . $table . ' where thsms = ' . $thsms );
             $fields_amount  =   $result->field_count;
             $rows_num = $mysqli->affected_rows;
             $res            =   $mysqli->query('SHOW CREATE TABLE ' . $table);
@@ -576,8 +588,13 @@ class Controller extends BaseController
     public function dashboardAdmin()
     {
         //where skor not 0 
-        $sudah = Trkuesl::where('skor', '!=', 0)->get()->pluck('nimhs')->unique();
-        $belum = Trkuesl::where('skor', 0)->get()->pluck('nimhs')->unique();
+
+        $thsms = Tahunsemester::where('status', 'aktif')->first();
+        $thsms_id = $thsms->id;
+        $thsms_active = $thsms->thsms;
+
+        $sudah = Trkuesl::where('skor', '!=', 0)->where('thsms', $thsms_active)->get()->pluck('nimhs')->unique();
+        $belum = Trkuesl::where('skor', 0)->where('thsms', $thsms_active)->get()->pluck('nimhs')->unique();
 
         foreach ($sudah as $key => $value) {
             $user_sudah = User::where('nimhs', $value)->first();
@@ -657,23 +674,34 @@ class Controller extends BaseController
 
     public function exportMatkul($matkul)
     {
-        $dosen = Dosen::where('kdkmk', $matkul)->pluck('nmdosen')->toArray();
+
+        $thsms = Tahunsemester::where('status', 'aktif')->first();
+        $thsms_id = $thsms->id;
+        $thsms_active = $thsms->thsms;
+        
+        $dosen = Dosen::where('kdkmk', $matkul)->where('thsms', $thsms_active)->pluck('nmdosen')->toArray();
         $namaDosen = '';
         foreach ($dosen as $key => $value) {
             $namaDosen .= '<div>' . $key + 1 . '. ' .  $value . ' </div>';
         }
-        // dd($dosen, $namaDosen);
+        // dd($dosen, $namaDosen , $matkul);
         $namaMatkul = Tblmk::where('kdkmk', $matkul)->first()->nakmk;
 
         $tblmk = Tblmk::all()->pluck('kdkmk')->toArray();
 
         $trkuesk2 = Trkuesk::whereIn('kdkmk', $tblmk)->where('skor', '!=', 0)->pluck('kdkmk')->unique();
 
-        $trkuesk = Trkuesk::where('kdkmk', $matkul)->where('skor', '!=', 0)->get();
+     
+
+        $trkuesk = Trkuesk::where('kdkmk', $matkul)->where('skor', '!=', 0)->where('thsms', $thsms_active) ->get();
         $trkueskKdkues = $trkuesk->pluck('kdkues')->unique();
         $trkueskKdkues2['total'] = 0;
+        $trkueskKdkues2['average'] = [];
+        $trkueskKdkues2['sum'] = [];
+        $trkueskKdkues2['count'] = [''];
 
         foreach ($trkueskKdkues as $key => $value) {
+            // dump($value);
             $skor = $trkuesk->where('kdkues', $value)->pluck('skor')->toArray();
             $trkueskKdkues2['average'][$key] = ['keter' => Tbkues::where('kdkues', $value)->first()->keter, 'skor' => array_sum($skor) / count($skor)];
             $trkueskKdkues2['sum'][$key] = array_sum($skor);
@@ -685,7 +713,7 @@ class Controller extends BaseController
 
 
 
-        // dd($trkueskKdkues2);
+        // dd($trkuesk,$trkueskKdkues2,$trkueskKdkues);
         $pdf = App::make('dompdf.wrapper');
 
         $tableRows = '';
@@ -702,14 +730,14 @@ class Controller extends BaseController
         </tr>';
         }
 
-        $rataRata = round($trkueskKdkues2['total'] / count($trkueskKdkues2['average']), 2);
+        $rataRata = count($trkueskKdkues2['average']) ? round($trkueskKdkues2['total'] / count($trkueskKdkues2['average']), 2) : 0;
         $keteranganRataRata = $rataRata < 4 && $rataRata >= 3 ? 'Baik' : ($rataRata < 3 && $rataRata >= 2 ? 'Kurang' : ($rataRata < 2 && $rataRata >= 1 ? 'Sangat Kurang' : ($rataRata < 1 && $rataRata >= 0 ? 'Sangat Kurang' : 'Sangat Baik')));
 
 
 
         $tableRowsComment = '';
 
-        $comments = Comment::where('kdkmk', $matkul)->get();
+        $comments = Comment::where('kdkmk', $matkul)->where('tahunsemester_id', $thsms_id)->get();
 
 
         foreach ($comments as $key => $value) {
@@ -786,7 +814,7 @@ class Controller extends BaseController
             <td >Ilmu Administrasi Negara</td>
             <td >Tahun Akademik</td>
             <td ">:</td>
-            <td > 2023/2024</td>
+            <td > '.Setting::find(2)->is_open .'</td>
             </tr>
             <tr>
             <td >Mata Kuliah</td>
@@ -829,10 +857,15 @@ class Controller extends BaseController
             </tbody>
             </table>
             <p></p>
-            <p style="text-align: right;">Garut ' . Date::now()->format('d') . ' ' . Date::now()->format('m') . ' ' . Date::now()->format('Y') . '</p>
+            <p style="text-align: right;">Garut ' . Date::now()->format('d') . ' ' . Carbon::now()->isoFormat('MMMM') . ' ' . Date::now()->format('Y') . '</p>
             <p style="text-align: right;">Ketua Gugus Kendali Mutu&nbsp;</p>
             <p style="text-align: right;"></p>
             <p style="text-align: right;"></p>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
             <p style="text-align: right;">Wahyu Andrias Kurniawan, M.T</p>
             <p style="text-align: right;"></p>
             <table border="1" style="border-collapse: collapse; width: 100%;">
@@ -879,8 +912,12 @@ class Controller extends BaseController
         $tblmk = Tblmk::all()->pluck('kdkmk')->toArray();
 
         $trkuesk2 = Trkuesk::whereIn('kdkmk', $tblmk)->where('skor', '!=', 0)->pluck('kdkmk')->unique();
+        $thsms = Tahunsemester::where('status', 'aktif')->first();
+        $thsms_id = $thsms->id;
+        $thsms_active = $thsms->thsms;
 
-        $trkuesl = Trkuesl::where('klkues', $layanan)->where('skor', '!=', 0)->get();
+        $trkuesl = Trkuesl::where('klkues', $layanan)->where('skor', '!=', 0)->where('thsms', $thsms_active)->get();
+        
         $trkueslklkues = $trkuesl->pluck('kdkues')->unique();
         $trkueslklkues2['total'] = 0;
         // dd($trkuesl->pluck('skor')->toArray(),$trkueslklkues);
@@ -922,7 +959,7 @@ class Controller extends BaseController
 
         $tableRowsComment = '';
 
-        $comments = Comment::where('klkues', $layanan)->get();
+        $comments = Comment::where('klkues', $layanan)->where('tahunsemester_id', $thsms_id)->get();
         // dd($comments);
 
         foreach ($comments as $key => $value) {
@@ -999,7 +1036,7 @@ class Controller extends BaseController
             <td style="width: 33.8642%;">Ilmu Administrasi Negara</td>
             <td style="width: 20.2361%;">Tahun Akademik</td>
             <td style="width: 2.2425%;">:</td>
-            <td style="width: 19.9309%;"> 2023/2024</td>
+            <td style="width: 19.9309%;"> '.Setting::find(2)->is_open .'</td>
             </tr>
             <tr>
             <td style="width: 19.1613%;">Layanan</td>
@@ -1036,7 +1073,7 @@ class Controller extends BaseController
             </tbody>
             </table>
             <p></p>
-            <p style="text-align: right;">Garut ' . Date::now()->format('d') . ' ' . Date::now()->format('m') . ' ' . Date::now()->format('Y') . '</p>
+            <p style="text-align: right;">Garut ' . Date::now()->format('d') . ' ' . Carbon::now()->isoFormat('MMMM') . ' ' . Date::now()->format('Y') . '</p>
             <p style="text-align: right;">Ketua Gugus Kendali Mutu&nbsp;</p>
             <p style="text-align: right;"></p>
             <p style="text-align: right;"></p>
@@ -1252,7 +1289,7 @@ class Controller extends BaseController
             <td style="width: 33.8642%;">Ilmu Administrasi Negara</td>
             <td style="width: 20.2361%;">Tahun Akademik</td>
             <td style="width: 2.2425%;">:</td>
-            <td style="width: 19.9309%;"> 2023/2024</td>
+            <td style="width: 19.9309%;"> '.Setting::find(2)->is_open .'</td>
             </tr>
             <tr>
             <td style="width: 19.1613%;">Layanan</td>
@@ -1289,7 +1326,7 @@ class Controller extends BaseController
             </tbody>
             </table>
             <p></p>
-            <p style="text-align: right;">Garut ' . Date::now()->format('d') . ' ' . Date::now()->format('m') . ' ' . Date::now()->format('Y') . '</p>
+            <p style="text-align: right;">Garut ' . Date::now()->format('d') . ' ' . Carbon::now()->isoFormat('MMMM') . ' ' . Date::now()->format('Y') . '</p>
             <p style="text-align: right;">Ketua Gugus Kendali Mutu&nbsp;</p>
             <p style="text-align: right;"></p>
             <p style="text-align: right;"></p>
@@ -1403,17 +1440,15 @@ class Controller extends BaseController
                 [
                     'user_id' => Auth::user()->id,
                     'tahunsemester_id' => Tahunsemester::where('status', 'aktif')->first()->id,
-                    'status' => 'progress',
-                    'kdkmk' => $current_progress->kdkmk ?? '',
                 ],
                 [
                     'kelas' => json_encode(array_merge(json_decode(optional($current_progress)->kelas, true) ?: [], [$kelas])),
                 ]
             );
 
-            return response()->json(['success' => 'Data updated successfully.']);
+               return response()->json(['message' => 'Data berhasil disimpan.', 'color' => 'green']);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()]);
+            return response()->json(['message' => $e->getMessage() , 'color' => 'red']);
         }
 
 
@@ -1475,8 +1510,6 @@ class Controller extends BaseController
                 [
                     'user_id' => Auth::user()->id,
                     'tahunsemester_id' => Tahunsemester::where('status', 'aktif')->first()->id,
-                    'status' => 'progress',
-                    'kelas' => $current_progress->kelas ?? '',
 
                 ],
                 [
@@ -1485,9 +1518,9 @@ class Controller extends BaseController
             );
 
             // return response()->json($updateData);
-            return response()->json(['success' => 'Data updated successfully.']);
+            return response()->json(['message' => 'Data berhasil disimpan.', 'color' => 'green']);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()]);
+            return response()->json(['message' => $e->getMessage() , 'color' => 'red']);
         }
 
 
@@ -1504,38 +1537,42 @@ class Controller extends BaseController
 
       
         $kues = json_decode($request->kues, true);
-
         $array = [];
         foreach ($kues as $key => $value) {
-            // The line below splits the key into three parts: the prefix, the category, and the subcategory.
-            // It uses the explode() function to split the key at the underscore character, and assigns the parts to variables.
-            // However, if the key does not have exactly two underscores, the resulting array will have fewer than three elements,
-            // and the additional elements will be set to null.
-            // The '+ ['', '', null]' part at the end of the line fills in any missing elements with empty strings and null.
-            // This is done to ensure that the resulting array always has three elements.
-            // The resulting array is then assigned to the $prefix, $category, and $subcategory variables.
-            [$prefix, $category, $subcategory] = explode('_', $key, 3) + ['', '', null];
-
-            // The line below uses the $category, $subcategory, and $value variables to create a nested array.
-            // If $subcategory is null (which means the key did not have a subcategory), it uses the $prefix as the key.
-            // Otherwise, it uses the $subcategory as the key.
-            // The $value is then assigned to the key in the nested array.
-            // The resulting nested array is then assigned to the $array[$category] variable.
-            // This means that the $array is a two-dimensional array, where the first dimension is the category, and the second dimension is the key-value pairs within that category.
-            $array[$category][$subcategory ?? $prefix] = $value;
+     
+            [$mainCategory, $subCategory] = explode('_', $key, 2) + ['', null];
+            $array[$mainCategory][$subCategory] = $value;
+            if ($subCategory === null) {
+                $array[$mainCategory] = $value;
+            }
         }
+        // return response()->json($array);
+
+        $tahunsemesterId = Tahunsemester::where('status', 'aktif')->first()->id ;
         
         try {
             $hasil = Hasil::create([
                 'hasil' => json_encode($array),
                 'user_id' => Auth()->user()->id,
-                'tahunsemester_id' =>  Tahunsemester::where('status', 'aktif')->first()->id
+                'tahunsemester_id' =>  $tahunsemesterId
             ]);
     
             $hasil->save();
+
+
+            Progress::updateOrCreate(
+                [
+                    'user_id' => Auth::user()->id,
+                    'tahunsemester_id' => $tahunsemesterId,
+                ],
+                [
+                    'status' => '["hasil"]',
+
+                ]
+            );
     
                        
-            return response()->json(['success' => 'Data updated successfully.']);
+            return response()->json(['success' => 'Data berhasil disimpan.']);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
